@@ -1,0 +1,19 @@
+query blogQuery {
+  blogs {
+    data {
+      attributes {
+        title
+        views
+        content
+        date
+        image {
+          data {
+            attributes {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+}
