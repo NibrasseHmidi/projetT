@@ -86,4 +86,13 @@ export default {
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+  // router: {
+  //   routes: [
+  //     {
+  //       path: '/blog/:id',
+  //       component: 'pages/blog/index.vue',
+  //       name: 'index'
+  //     },
+  //   ]
+  // }
 }

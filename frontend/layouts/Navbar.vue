@@ -96,7 +96,7 @@
               <NuxtLink to="/pricing" class="nav-link">Pricing</NuxtLink>
             </li>
             <li class="nav-item">
-              <NuxtLink to="/blog-vue" class="nav-link">Blog</NuxtLink>
+              <NuxtLink to="/blog" class="nav-link">Blog</NuxtLink>
             </li>
             <li class="nav-item">
               <NuxtLink to="/contact" class="nav-link">Contact</NuxtLink>
