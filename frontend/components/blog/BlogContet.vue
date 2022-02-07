@@ -23,7 +23,7 @@
             </div>
             <div class="content">
               <h3>
-                <NuxtLink :to="'/blog/' + blog.id" >{{
+                <NuxtLink :to="'/blog/' + blog.id">{{
                   blog.attributes.title
                 }}</NuxtLink>
               </h3>
@@ -40,8 +40,8 @@
           <div class="pagination-area">
             <div class="nav-links">
               <span class="page-numbers current">1</span>
-              <a href="#" class="page-numbers">2</a>
-              <a href="#" class="page-numbers">3</a>
+              <button class="page-numbers" @click="showMore">2</button>
+              <button class="page-numbers">3</button>
               <a href="#" class="next page-numbers" title="Next Page"
                 ><i class="ri-arrow-right-line"></i
               ></a>
@@ -54,47 +54,72 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 // import axios from 'axios';
 
-const blogQuery = gql `
-  query blogQuery {
-blogs{
-  data{
-    id
-    attributes{
-    title
-   views
-    content
-      date
-      image{data{attributes{url}}}
-
-
-
-  }}
-}
-}
-`;
-
-
+const blogQuery = gql`
+  query blogQuery($start: Int, $limit: Int) {
+    blogs(pagination: { start: $start, limit: $limit }) {
+      data {
+        id
+        attributes {
+          title
+          views
+          content
+          date
+          image {
+            data {
+              attributes {
+                url
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`
 
 export default {
   name: 'BlogContet',
-  data (){
-        return {
-            blogs:{},
-            loading: 0,
-
-        }
-    },
+  data() {
+    return {
+      blogs: {},
+      loading: 0,
+      start: 0,
+      amountOfPosts: 3,
+    }
+  },
   apollo: {
-       $loadingKey: "loading",
+    $loadingKey: 'loading',
     blogs: {
       query: blogQuery,
       prefetch: true,
+      variables() {
+        return {
+          limit: this.amountOfPosts,
+        }
+      },
+    },
+  },
 
-
-
+  methods: {
+    showMore() {
+      // Fetch more data and transform the original result
+      this.$apollo.queries.blogs.fetchMore({
+        // New variables
+        variables: {
+          start: (this.start += this.amountOfPosts),
+        },
+        // Transform the previous result with new data
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          return {
+            __typename: previousResult.blogs.__typename,
+            // Merging the tag list
+            blogs: [...previousResult.blogs, ...fetchMoreResult.blogs],
+          }
+        },
+      })
     },
   },
 
@@ -107,7 +132,5 @@ export default {
   //     this.error = error;
   //   }
   // },
-
-
 }
 </script>

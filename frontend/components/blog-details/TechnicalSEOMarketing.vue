@@ -6,8 +6,8 @@
       >
         <div class="col-lg-6 col-md-12">
           <div class="content">
-            <h1>{{ blog.data.attributes.title }}</h1>
-            <p>{{ blog.data.attributes.content }}</p>
+            <h1>{{ blog.title }}</h1>
+            <p>{{ blog.content }}</p>
             <div class="post-author-meta">
               <div class="d-flex align-items-center">
                 <img src="~/assets/images/user/user1.jpg" alt="image" />
@@ -25,10 +25,7 @@
         <div class="col-lg-6 col-md-12">
           <div class="image">
             <img
-              :src="
-                `http://localhost:1337` +
-                blog.data.attributes.image.data[0].attributes.url
-              "
+              :src="   `http://localhost:1337` + blogimage"
               alt="image"
             />
           </div>
@@ -183,14 +180,25 @@ const blogQuery = gql`
 export default {
   name: 'TechnicalSEOMarketing',
 
+
+async fetch() {
+  const blogresult = await this.$apolloProvider.defaultClient.query({
+    query: blogQuery,
+    variables: { id: this.routeParam },
+  })
+
+  this.blog = blogresult.data.blog.data.attributes
+  this.blogimage = blogresult.data.blog.data.attributes.image.data[0].attributes.url
+   console.log(this.blog);
+    console.log(this.blogimage);
+
+},
   data() {
     return {
-      blog: [],
-      loading: false,
+      blog: {},
       routeParam: this.$route.params.id,
     }
   },
-
 
   //   async fetch() {
 
@@ -206,17 +214,17 @@ export default {
   // mounted() {
   //     console.log(this.blog);
   // },
-  apollo: {
-    $loadingKey: 'loading',
-    blog: {
-      query: blogQuery,
-
-      variables() {
-        return {
-          id: this.routeParam,
-        }
-      },
-    },
-  },
+//   apollo: {
+//     $loadingKey: 'loading',
+//     blog: {
+//       query: blogQuery,
+//  prefetch: ({ route }) => ({ id: route.params.id }),
+//       variables() {
+//         return {
+//           id:  this.$route.params.id,
+//         }
+//       },
+//     },
+//   },
 }
 </script>
